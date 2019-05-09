@@ -1,6 +1,6 @@
 <template>
     <div>
-        stuudios
+        studios
         
     </div>
 </template>
