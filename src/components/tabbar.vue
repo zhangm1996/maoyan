@@ -13,6 +13,7 @@
         width: 100%;
         display: flex;
         position: fixed;
+        z-index: 9;
             bottom: 0;
             left: 0;
         li{
