@@ -259,7 +259,7 @@ export default {
 
     },
 
-    //滚动加载的方法
+    //滚动加载的方法 和 滚动请求
     zxloadMore () {
       if (this.filmes.length > 40 && this.filmes.length <= this.total) {
         return
@@ -325,7 +325,7 @@ export default {
 
       return time2
     },
-    //点击特殊样式
+    //点击特殊样式 和请求
     handedata (index) {
       this.current = index
 
@@ -408,6 +408,7 @@ a {
     white-space: nowrap;
     overflow: hidden;
     float: right;
+    width: 200px;
   }
   .Tnav-left {
     height: 50.5px;
