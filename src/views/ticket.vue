@@ -42,27 +42,38 @@
             <div class="pubDesc line-ellipsis">{{datalist.pubDesc}}</div>
           </div>
         </div>
-        <div class="arrow-g">
+        <div class="arrow-g"
+             @click="qiehuandetail()">
           <i class="iconfont icon-youjiantou"></i>
         </div>
       </div>
       <div id="showDays">
+        <!-- <ticketdata :class="isShow?'min-line':''"
+                    ref="swiper"></ticketdata> -->
+
         <ul id="timeline"
-            class="mb-line-b">
+            :class="isShow?'min-line':''"
+            ref="swiper1">
           <router-link to=''
                        tag='li'
-                       activeClass='chosen'
-                       class="showDay"
-                       v-for="data in time"
-                       :key="data.item">{{data}}</router-link>
+                       :class="{active:current==index}"
+                       v-for="(data,index) in time"
+                       :key="data.item"
+                       @click.native="handedata(index)"
+                       ref="swiper">{{data}}</router-link>
 
         </ul>
       </div>
+      <!-- 中间导航栏————————待完成-->
       <!-- <div></div> -->
+      <!-- 影院 -->
       <div class="cinema-list cinema"
            style="margin-top: 86px;">
         <div class="list-wrap"
-             style="min-height: 503px;">
+             style="min-height: 503px;"
+             v-infinite-scroll="zxloadMore"
+             infinite-scroll-disabled="loading"
+             infinite-scroll-immediate-check="false">
           <div class="item mb-line-b"
                v-for="(item,index) in filmes"
                :key="index">
@@ -90,11 +101,10 @@
                 <div class="hallType">儿童厅</div>
               </div>
               <div class="discount-block">
-
-                <div>
+                <div class="Tadd">
                   <div class="discount-label normal card">
-                    <!-- <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAABNChwpAAAAAXNSR0IArs4c6QAAAgFJREFUSA3Nlz1LA0EQhmf3kouFEQwi+FEYQ+xEsImFoCDoL/CLaKd/QbC0sbCzFVuxsRS1jEVAsUqrIILRQAhaBGKMuawzwpGAm83mNhddCHfZnd3n3Z2ZuxsG2JI3YtQpVw6AiTkhYJj6/GqMwSsIdm312DsnMyzLCF79rGRAiIhfUOm6jL0FQvZU4Gfn0GU4KcINE5vjsc9LFXajE9kcfT7UDZaMQWwuG9Dpi/YyiIWZjqnSxrOAtWgANsYDysV1Bj0L0Flcx8ZoC1F0wf50UMo5fqjCY1FIxxo7jQSUHWgK+ag2YprfGwnIlQTQTk3a/46B2UEOIUu+v0gIIMgZLLTIZHJTOl+TL4K9ShckMc36Q+pc356QB6FLLJQFCqi4f39d2WoKLTy03ckg2OjAvcyXh9n1KX8eA0YC4n0MtuLoJru+o3bvjAS8o2vpfXCYsGEzZkFYHQ5SbcoglM5o6KQAoxhIDHBYiVqYERZcZB04f3aghNGv04wEuIDbQg3u8Lc4YsHymAVLeD17cuDypbWKjgggIZTpVwhM5x1YxzdlpaaXXB0T4J5GEbPy6F7/8WwUhC7U5OpZgIPfU5qnrNTn+UmoXLWNQc8n0AZDacqxUskpLXwcJDbHMinlI0O9NLI51WiAZZLa0odRZBKbU4FINRoDdtoNdxCDWMQk9jePWpE8hVOLbwAAAABJRU5ErkJggg=="
-                         alt=""> -->
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAABNChwpAAAAAXNSR0IArs4c6QAAAgFJREFUSA3Nlz1LA0EQhmf3kouFEQwi+FEYQ+xEsImFoCDoL/CLaKd/QbC0sbCzFVuxsRS1jEVAsUqrIILRQAhaBGKMuawzwpGAm83mNhddCHfZnd3n3Z2ZuxsG2JI3YtQpVw6AiTkhYJj6/GqMwSsIdm312DsnMyzLCF79rGRAiIhfUOm6jL0FQvZU4Gfn0GU4KcINE5vjsc9LFXajE9kcfT7UDZaMQWwuG9Dpi/YyiIWZjqnSxrOAtWgANsYDysV1Bj0L0Flcx8ZoC1F0wf50UMo5fqjCY1FIxxo7jQSUHWgK+ag2YprfGwnIlQTQTk3a/46B2UEOIUu+v0gIIMgZLLTIZHJTOl+TL4K9ShckMc36Q+pc356QB6FLLJQFCqi4f39d2WoKLTy03ckg2OjAvcyXh9n1KX8eA0YC4n0MtuLoJru+o3bvjAS8o2vpfXCYsGEzZkFYHQ5SbcoglM5o6KQAoxhIDHBYiVqYERZcZB04f3aghNGv04wEuIDbQg3u8Lc4YsHymAVLeD17cuDypbWKjgggIZTpVwhM5x1YxzdlpaaXXB0T4J5GEbPy6F7/8WwUhC7U5OpZgIPfU5qnrNTn+UmoXLWNQc8n0AZDacqxUskpLXwcJDbHMinlI0O9NLI51WiAZZLa0odRZBKbU4FINRoDdtoNdxCDWMQk9jePWpE8hVOLbwAAAABJRU5ErkJggg=="
+                         alt="">
                   </div>
                   <div class="discount-label-text">{{filmes[index].promotion.cardPromotionTag}}</div>
                 </div>
@@ -116,20 +126,33 @@
 <script>
 import icon from '../../public/icon/iconfont.css'
 import axios from 'axios'
+import { Indicator } from 'mint-ui'
+
 
 export default {
   data () {
     return {
-      datalist: {},
-      path: {},
-      arr: {},
-      time: [],
-      filmes: {}
+      datalist: {},//头部数据
+      path: {}, //头部图片过滤
+      arr: {},  //评论计算
+      filmes: {}, //影院对象
+      offset: 0,  //传给后端的影院值
+      total: 56, //影院总长度
+      isShow: false,
+      time: [],   //日期对象
+      current: 0,
+      day: [],
+      days: ''
 
     }
   },
-
   created () {
+    //懒加载
+    Indicator.open({
+      text: '加载中...',
+      spinnerType: 'fading-circle'
+    });
+    //片头请求
     axios({
       url: '/ajax/detailmovie?movieId=248172',
 
@@ -137,39 +160,21 @@ export default {
       this.path = this.$options.methods.handlePath(res.data.detailMovie.img)
       this.arr = this.$options.methods.sum(res.data.detailMovie.snum)
       this.datalist = res.data.detailMovie
-
+      Indicator.close()
     })
-
   },
+
   mounted () {
+    //懒加载
+    Indicator.open({
+      text: '加载中...',
+      spinnerType: 'fading-circle'
+    });
+
     //日期请求
     axios({
       method: 'post',
       url: '/ajax/movie?forceUpdate=1557386439279',
-      data: {
-        'movieId': '248172',
-        'day': '2019-05-09',
-        'offset': '0',
-        'limit': '20',
-        'districtId': '-1',
-        'lineId': '-1',
-        'hallType': '-1',
-        'brandId': '-1',
-        'serviceId': ' -1',
-        'areaId': '-1',
-        'stationId': '-1',
-
-        'updateShowDay': 'true',
-        'reqId': '1557386661020',
-        'cityId': '65'
-      }
-    }).then(res => {
-      this.time = this.$options.methods.timedata(res.data.showDays.dates)
-    })
-    //影院请求
-    axios({
-      method: 'post',
-      url: '/ajax/movie?forceUpdate=1557459142350',
       data: {
         'movieId': '248172',
         'day': '2019-05-10',
@@ -182,21 +187,54 @@ export default {
         'serviceId': ' -1',
         'areaId': '-1',
         'stationId': '-1',
+        'updateShowDay': 'true',
+        'reqId': '1557386661020',
+        'cityId': '65'
+      }
+    }).then(res => {
+      this.time = this.$options.methods.timedata(res.data.showDays.dates)
+      for (let i = 0; i < res.data.showDays.dates.length; i++) {
+        this.day.push(res.data.showDays.dates[i].date)
+      }
 
+    })
+    //影院请求
+    axios({
+      method: 'post',
+      url: '/ajax/movie?forceUpdate=1557459142350',
+
+      data: {
+        'movieId': '248172',
+        'day': '2019-05-10',
+        'offset': '0',
+        'limit': '20',
+        'districtId': '-1',
+        'lineId': '-1',
+        'hallType': '-1',
+        'brandId': '-1',
+        'serviceId': ' -1',
+        'areaId': '-1',
+        'stationId': '-1',
         'updateShowDay': 'true',
         'reqId': '1557459142180',
         'cityId': '65'
       }
     }).then(res => {
       this.filmes = res.data.cinemas
-      console.log(res.data)
+
     })
+    window.onscroll = this.handScroll
+  },
+  destroyed () {
+    window.onscroll = null
   },
 
   methods: {
+    //过滤方法
     handlePath (path) {
       return path.replace('w.h', '148.208');
     },
+    //评论计算的方法
     sum (arr) {
 
       if (arr > 1000000) {
@@ -220,6 +258,50 @@ export default {
 
 
     },
+
+    //滚动加载的方法
+    zxloadMore () {
+      if (this.filmes.length > 40 && this.filmes.length <= this.total) {
+        return
+      } else {
+        this.offset += 20
+
+      }
+      Indicator.open({
+        text: '加载中...',
+        spinnerType: 'fading-circle'
+      });
+      axios({
+        method: 'post',
+        url: '/ajax/movie?forceUpdate=1557470548690',
+        data: {
+          'movieId': '248172',
+          'day': this.days,
+          'offset': this.offset,
+          'limit': '20',
+          'districtId': '-1',
+          'lineId': '-1',
+          'hallType': '-1',
+          'brandId': '-1',
+          'serviceId': ' -1',
+          'areaId': '-1',
+          'stationId': '-1',
+          'updateShowDay': 'true',
+          'reqId': '1557470548682',
+          'cityId': '65'
+        },
+
+      }).then(res => {
+        this.filmes = [...this.filmes, ...res.data.cinemas]
+        Indicator.close()
+      })
+      Indicator.close()
+    },
+    //详情页跳转
+    qiehuandetail () {
+
+    },
+    //日期待完成...
     timedata (time) {
       let time2 = []
       for (let i = 0; i < time.length; i++) {
@@ -235,63 +317,57 @@ export default {
 
       let arry = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
-      // console.log(time3)
-      // if (time3 = 1) {
-      //   time3 = '周一'
-      //   arry.push(time3)
-      // } if (time3 = 2) {
-      //   time3 = '周二'
-      //   arry.push(time3)
-      // } if (time3 = 3) {
-      //   time3 = '周三'
-      //   arry.push(time3)
-      // } if (time3 = 4) {
-      //   time3 = '周四'
-      //   arry.push(time3)
-      // } if (time3 = 5) {
-      //   time3 = '周五'
-      //   arry.push(time3)
-      // } if (time3 = 6) {
-      //   time3 = '周六'
-      //   arry.push(time3)
-      // } if (time3 = 7) {
-      //   time3 = '周日'
-      //   arry.push(time3)
-      // }
-      // let dates = new Date()
-      // let year = dates.getFullYear()
-      // let month = dates.getMonth() + 1
-      // let day = dates.getDay()
-      // current = 7
 
-      // for (let i = 3; i <= time2.length; i++) {
-      //   time3 = new Date().getDay()
-      //   time3 = time3 + i
-      //   if (time3 > 7) {
-      //     time3 = time3 - arry.length
-      //   }
-      //   time3 = arry[time3]
-      //   // time3 = arry[i]
-      //   console.log(time3)
-      //   // time2[i] = time3 + time2[i]
-      // }
-
-
-
-      // console.log(time3)
       time2[0] = "今天" + time2[0]
       time2[1] = '明天' + time2[1]
       time2[2] = '后天' + time2[2]
 
-      // time2[4] = time3 + 1 + time2[4]
-      // time2[5] = time3 + 2 + time2[5]
-      // time2[6] = time3 + 3 + time2[6]
 
-      // time2[3] = 
       return time2
     },
+    //点击特殊样式
+    handedata (index) {
+      this.current = index
+
+      this.days = this.day[index]
+
+      axios({
+        method: 'post',
+        url: '/ajax/movie?forceUpdate=1557486095840',
+        data: {
+          'movieId': '248172',
+          'day': this.days,
+          'offset': '0',
+          'limit': '20',
+          'districtId': '-1',
+          'lineId': '-1',
+          'hallType': '-1',
+          'brandId': '-1',
+          'serviceId': '-1',
+          'areaId': '-1',
+          'stationId': '-1 ',
+          'updateShowDay': 'false',
+          'reqId': '1557484634327',
+          'cityId': '65'
+        }
+      }).then(res => {
+        this.filmes = res.data.cinemas
+
+      })
+    },
+
+    //吸顶效果
+    handScroll () {
+
+      if ((document.documentElement.scrollTop || document.body.scrollTop) >= 200) {
+        this.isShow = true
+      } else {
+        this.isShow = false
+      }
+    }
 
   }
+
 }
 
 </script>
@@ -437,32 +513,11 @@ a {
     opacity: 0.8;
   }
 }
-#showDays,
-#showDays #timeline {
+#showDays {
   width: 100%;
   background-color: #fff;
   overflow-x: scroll;
   height: 45px;
-}
-#showDays #timeline {
-  padding: 0;
-  margin: 0;
-  white-space: nowrap;
-}
-#showDays #timeline .showDay.chosen {
-  border-bottom: 2px solid #f03d37;
-  color: #f03d37;
-}
-#showDays #timeline .showDay {
-  position: relative;
-  display: inline-block;
-  width: 115px;
-  line-height: 43px;
-  margin-left: 4.5px;
-  font-size: 14px;
-  text-align: center;
-  list-style: none;
-  color: #666;
 }
 .cinema-list .list-wrap {
   background-color: #fff;
@@ -472,6 +527,7 @@ a {
     background-color: #fff;
     position: relative;
     overflow: hidden;
+    border-bottom: 0.5px rgb(155, 155, 155, 0.3) solid;
   }
   .title-block {
     display: block;
@@ -523,17 +579,24 @@ a {
     .discount-block {
       color: #999;
       margin-bottom: 4px;
-      margin-top: -10px;
+
       .discount-label {
         width: 15px;
         height: 14px;
         position: relative;
         top: 3px;
+        display: inline-block;
+        img {
+          width: 15px;
+          height: 14px;
+          display: inline-block;
+        }
       }
     }
     .discount-label-text {
-      margin-left: 0;
+      margin-left: 3px;
       font-size: 11px;
+      display: inline-block;
     }
   }
   .min-show-block {
@@ -541,6 +604,7 @@ a {
     margin-right: -15px;
     line-height: 1.5;
     font-size: 0;
+
     span {
       font-size: 12px;
       color: #999;
@@ -583,5 +647,49 @@ a {
   .cinema-list .list-wrap .price-block .q {
     color: #f03d37;
   }
+}
+.min-line {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: #fff;
+  overflow-x: scroll;
+  height: 45px;
+  white-space: nowrap;
+  z-index: 100;
+}
+.min-line::-webkit-scrollbar {
+  display: none;
+}
+#showDays #timeline {
+  width: 100%;
+  background-color: #fff;
+  overflow-x: scroll;
+  height: 45px;
+}
+//默认浏览器滚动条隐藏,有兼容问题
+#timeline::-webkit-scrollbar {
+  display: none;
+}
+#timeline {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+#timeline .active {
+  border-bottom: 2px solid #f03d37;
+  color: #f03d37;
+}
+#timeline li {
+  position: relative;
+  display: inline-block;
+  width: 115px;
+  line-height: 43px;
+  margin-left: 4.5px;
+  font-size: 14px;
+  text-align: center;
+  list-style: none;
+  color: #666;
 }
 </style>
