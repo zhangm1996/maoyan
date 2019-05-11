@@ -35,9 +35,11 @@
             </div>
             <div class="type line-ellipsis">
               <span>{{datalist.cat}}</span>
-              <div class="type-group">
-                <!-- <img style="width: 42px;"
-                     class="sd-imax"> -->
+              <div class="type-group"
+                   v-if="datalist.version!='v3d imax'?false:true">
+                <img style="width: 42px;"
+                     class="sd-imax"
+                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAeCAYAAADTsBuJAAAD+0lEQVRoge2aPUwUQRSAPy4YiZh4DbT8VJhIvA4KkyOhBq+Uyi2gFlssPAtoPW01cWm0RaxVTCi0EkOhFXe0WoiJGhJJ1uK9cefW/ZnF3K3R/ZLNDDNvfnhv5s3bvRkIggBgGLgIjACDlPSSE+AT8B74NhAEwXngCnCm0Gn9f/wAdgeBKf5O5T8regI9Ygi4DIwCUxXE7ZT0j2PgneZHKpQ+vwiONR2sFDqNEkoDFExpgIJx9f+TwDJwySprA0+A11bZCjCR0EcbeAp8zDnHKDWgBfj6oH/XgC3Np9EAVoE9TaNUtR+AJrCTMP4R4GkaZUv7iWvfhcsOmAQ2EOW/QZT+BlH0GjBtyU6o3L71gIRcC8B9YN5hzDSqQB0Yt8pqWtZ0aN9S2VpCfUPr68QbaE+fq4QLINr/VcQwO1mTcdkBS8A54B7w3CpfRHbFIqGiDU9i8tPALeAGshsOHMbOywVkVfoJ9Q1gLKMPo/RXiCLHgU6MzJzW2+PNIf/foZZn4rIDZoDvdCsfQtcz7DIQYqR1zS86tsnLF9J3QdyKtqkhL0mbhK7MS5D1dLwWYiTbdTWId02/4WKAReBaTPmspnl8+r7Kz2YJnpIWssIbMXVziFvZTGlvDOQjykxbyeYMuaCyW5q/qXVO5I2C5hGXtIG4n4/A45x9tBGX1gt8TeNWuqdpM6FtFTHcIaHv9hGDerEtpH4T2TV1JMjICgK6OK0BTDS0Tf6ophe+39BBFFJHVrxhHLiO+PVOQtsGsoJtBfqaeiljbiXknchrgDXEJd1CIiFzCOdhMqd8XpqaelbZaqQurZ1vlXUQo0WjLkPVkrfPA2eyDDCMRC+jkfJ9wpWS1wATyKHeKzqI0q4THo4e8gFsJ6HNHGF09BkIrKeu5XFuzfj9O3SfB85khaGTSOTSRsIrm2+I+4kaJ415lX+Ro81paAIvEaUc8btrieJpeo/46GVVZVYjZXXE2E0tayChaYvsiAvINsA+slonkJ1gx/tGmW2XgVR+RfvLe3DnZYcwgjnSvJ8gW0V2yyHJSqsiC9DTfmrAXcTteJach0RAN3QOmbvB5UXsgXa4jvj9AySMNJ8cHsa0WbLyxoWNIspf488/R7jQBB4RuogkPE3TdkiL0AAm5DRtO5bcEbIL3iKGGifjfcDFAM8Rd7OMvJTNaHkbUX70LRi6DdBGFL5t9dUPfMQIVdKVa1Z92mrtIGdIXeXGkGgrrs0eYvDbOoe4d5JfDARBsJAmEMMw/VHiv/qTpGEBTvc5ul8r+L+g/D2gYEoDFExpgIKpIDe1SvrLWU1PKsg1uZL+MUT4a9yn8mpicfwAdgf0cu555IpieTm395jLuR+Arz8BrLjpSMoYSlEAAAAASUVORK5CYII=">
               </div>
             </div>
             <div class="src line-ellipsis">{{datalist.src}}/{{datalist.episodeDur}}分钟</div>
@@ -95,16 +97,22 @@
               </div>
               <div class="flex"></div>
               <div class="label-block">
-                <div class="endorse">改签</div>
-                <div class="snack">小吃</div>
-                <div class="vipTag">折扣卡</div>
-                <div class="hallType">IMAX厅</div>
-                <div class="hallType">RealD 6FL厅</div>
-                <div class="hallType">4DX厅</div>
-                <div class="hallType">儿童厅</div>
+                <div class="allowRefund"
+                     v-if="filmes[index].tag.allowRefund">退</div>
+                <div class="endorse"
+                     v-if="filmes[index].tag.endorse">改签</div>
+                <div class="snack"
+                     v-if="filmes[index].tag.snack">小吃</div>
+                <div class="vipTag"
+                     v-if="filmes[index].tag.vipTag">折扣卡</div>
+                <div class="hallType"
+                     v-for="datalie in filmes[index].tag.hallType"
+                     :key="datalie">{{datalie}}</div>
+
               </div>
               <div class="discount-block">
-                <div class="Tadd">
+                <div class="Tadd"
+                     v-show="filmes[index].promotion.cardPromotionTag!=null?true:false">
                   <div class="discount-label normal card">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAABNChwpAAAAAXNSR0IArs4c6QAAAgFJREFUSA3Nlz1LA0EQhmf3kouFEQwi+FEYQ+xEsImFoCDoL/CLaKd/QbC0sbCzFVuxsRS1jEVAsUqrIILRQAhaBGKMuawzwpGAm83mNhddCHfZnd3n3Z2ZuxsG2JI3YtQpVw6AiTkhYJj6/GqMwSsIdm312DsnMyzLCF79rGRAiIhfUOm6jL0FQvZU4Gfn0GU4KcINE5vjsc9LFXajE9kcfT7UDZaMQWwuG9Dpi/YyiIWZjqnSxrOAtWgANsYDysV1Bj0L0Flcx8ZoC1F0wf50UMo5fqjCY1FIxxo7jQSUHWgK+ag2YprfGwnIlQTQTk3a/46B2UEOIUu+v0gIIMgZLLTIZHJTOl+TL4K9ShckMc36Q+pc356QB6FLLJQFCqi4f39d2WoKLTy03ckg2OjAvcyXh9n1KX8eA0YC4n0MtuLoJru+o3bvjAS8o2vpfXCYsGEzZkFYHQ5SbcoglM5o6KQAoxhIDHBYiVqYERZcZB04f3aghNGv04wEuIDbQg3u8Lc4YsHymAVLeD17cuDypbWKjgggIZTpVwhM5x1YxzdlpaaXXB0T4J5GEbPy6F7/8WwUhC7U5OpZgIPfU5qnrNTn+UmoXLWNQc8n0AZDacqxUskpLXwcJDbHMinlI0O9NLI51WiAZZLa0odRZBKbU4FINRoDdtoNdxCDWMQk9jePWpE8hVOLbwAAAABJRU5ErkJggg=="
                          alt="">
@@ -117,8 +125,7 @@
             <div class="min-show-block  disabled  J-fload">
               <span>近期场次：</span>
               <span class="time-line">{{filmes[index].showTimes}}</span>
-              <!-- <span class="time-line"> 11:45 </span>
-              <span class="time-line"> 13:00</span> -->
+
             </div>
           </div>
         </div>
@@ -149,7 +156,8 @@ export default {
       today: '', //获取今天日期
       isshowsc: true, //判断电影是否上映然后显示或者隐藏
       ell: '', //动态切换数据
-      checkType: false  //动态切换font-size
+      checkType: false, //动态切换font-size
+
     }
   },
   created () {
@@ -164,6 +172,7 @@ export default {
 
     }).then(res => {
       this.path = this.$options.methods.handlePath(res.data.detailMovie.img)
+
       this.datalist = res.data.detailMovie
       let nodat = new Date()
       let a = nodat.getFullYear()
@@ -246,10 +255,7 @@ export default {
         'cityId': '65'
       }
     }).then(res => {
-
       this.filmes = res.data.cinemas
-
-
     })
     window.onscroll = this.handScroll
   },
@@ -498,11 +504,21 @@ a {
 .detail {
   height: 150px;
   padding: 19px 30px 19px 15px;
-  img {
+  .poter img {
     width: 110px;
     height: 150px;
     box-sizing: border-box;
     display: inline-block;
+  }
+  .type-group {
+    display: inline-block;
+    width: 42px;
+    opacity: 0.85;
+    margin-left: 5px;
+
+    img {
+      display: block;
+    }
   }
 }
 .flex {
@@ -665,7 +681,8 @@ a {
   }
 
   .endorse,
-  .hallType {
+  .hallType,
+  .allowRefund {
     color: #589daf;
     border: 1px solid #589daf;
   }
