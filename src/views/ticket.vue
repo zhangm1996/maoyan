@@ -28,8 +28,10 @@
           <div class="content flex">
             <div class="title middle line-ellipsis">{{datalist.nm}}</div>
             <div class="title-en-name line-ellipsis">{{datalist.enm}}</div>
-            <div class="score line-ellipsis">{{datalist.sc}}
-              <span class="snum">{{arr}}</span>
+            <div class="score line-ellipsis"
+                 :style="{fontSize:checkType?'14px':'18px'}">{{ell}}
+              <span class="snum"
+                    v-show="isshowsc">{{arr}}</span>
             </div>
             <div class="type line-ellipsis">
               <span>{{datalist.cat}}</span>
@@ -44,6 +46,7 @@
         </div>
         <div class="arrow-g"
              @click="qiehuandetail()">
+          <!-- 跳转详情页 -->
           <i class="iconfont icon-youjiantou"></i>
         </div>
       </div>
@@ -140,10 +143,13 @@ export default {
       total: 56, //影院总长度
       isShow: false,
       time: [],   //日期对象
-      current: 0,
-      day: [],
-      days: ''
-
+      current: 0, //加载数据需要的属性
+      day: [],  //日期
+      days: '', //获取点击日期
+      today: '', //获取今天日期
+      isshowsc: true, //判断电影是否上映然后显示或者隐藏
+      ell: '', //动态切换数据
+      checkType: false  //动态切换font-size
     }
   },
   created () {
@@ -158,8 +164,28 @@ export default {
 
     }).then(res => {
       this.path = this.$options.methods.handlePath(res.data.detailMovie.img)
-      this.arr = this.$options.methods.sum(res.data.detailMovie.snum)
       this.datalist = res.data.detailMovie
+      let nodat = new Date()
+      let a = nodat.getFullYear()
+      let b = nodat.getMonth() + 1
+      let c = nodat.getDate()
+      if (b < 10) {
+        b = '0' + b
+      }
+      let d = a + '-' + b + '-' + c
+      if (res.data.detailMovie.rt > d) {
+        this.isshowsc = false
+        this.checkType = true
+        this.ell = res.data.detailMovie.wish + '人想看'
+
+      } else {
+        this.checkType = false
+        this.isshowsc = true
+        this.ell = res.data.detailMovie.sc
+        this.arr = this.$options.methods.sum(res.data.detailMovie.snum)
+
+      }
+
       Indicator.close()
     })
   },
@@ -205,7 +231,7 @@ export default {
 
       data: {
         'movieId': '248172',
-        'day': '2019-05-10',
+        'day': this.today,
         'offset': '0',
         'limit': '20',
         'districtId': '-1',
@@ -220,7 +246,9 @@ export default {
         'cityId': '65'
       }
     }).then(res => {
+
       this.filmes = res.data.cinemas
+
 
     })
     window.onscroll = this.handScroll
@@ -236,6 +264,7 @@ export default {
     },
     //评论计算的方法
     sum (arr) {
+
 
       if (arr > 1000000) {
         arr = arr / 10000
@@ -303,6 +332,8 @@ export default {
     },
     //日期待完成...
     timedata (time) {
+      this.today = time[0].date //获取今天的日期 传给today 为了要那天的数据如果写死，则会在第二天返回空数据
+
       let time2 = []
       for (let i = 0; i < time.length; i++) {
         let a = time[i].date.slice(4, 5)
@@ -358,13 +389,13 @@ export default {
 
     //吸顶效果
     handScroll () {
-
       if ((document.documentElement.scrollTop || document.body.scrollTop) >= 200) {
         this.isShow = true
       } else {
         this.isShow = false
       }
     }
+
 
   }
 
