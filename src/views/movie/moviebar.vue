@@ -15,6 +15,7 @@ export default {
         myfixed:Function
     }
 }
+
 </script>
 
 <style lang="scss" scoped>

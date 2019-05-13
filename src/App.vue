@@ -1,15 +1,18 @@
 <template>
   <div id="app">
-    <tabbar></tabbar>
+    <selection></selection>
+    <tabbar v-show="$store.state.isTabbarShow"></tabbar>
     <router-view></router-view>
   </div>
 </template>
 <script>
 import Vue from 'vue'
 import tabbar from './components/tabbar'
+import selection from './components/selection'
 export default {
   components:{
-    tabbar
+    tabbar,
+    selection
   }
 }
 </script>
