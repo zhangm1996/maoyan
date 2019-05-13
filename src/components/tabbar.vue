@@ -15,6 +15,7 @@ export default {
 <style src="../assets/css/iconfont.css"></style>
 
 <style lang='scss' scoped>
+
     ul{
         background: white;
         width: 100%;
