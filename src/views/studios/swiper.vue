@@ -19,11 +19,11 @@
 			var swiper = new Swiper('.swiper-container', {
       slidesPerView: 5,
       spaceBetween: 50,
-		centeredSlides: true,
-		slideToClickedSlide: true,
+			centeredSlides: true,
+			slideToClickedSlide: true,
       pagination: {
-        el: '.swiper-pagination',
-				clickable: true,
+      el: '.swiper-pagination',
+			clickable: true,
       },
     });
 		},

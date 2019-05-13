@@ -12,7 +12,7 @@ import axios from 'axios'
 export default {
     mounted(){
         axios('/ajax/movieOnInfoList?token=').then(res=>{
-            console.log(res.data)
+            
         })
     }
 }
